@@ -48,7 +48,7 @@ int cfgSockInit()
     if (si_init_flag)
         return 0;
 
-        s_conf_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
+    s_conf_fd = socket(AF_UNIX, SOCK_DGRAM, 0);
     if (s_conf_fd < 0)
     {
         return -1;

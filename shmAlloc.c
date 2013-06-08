@@ -16,7 +16,7 @@
 #define __INLINE__ inline
 #define __PREFETCH__(x) 1
 
-#define ALIGN_4BYTES(x)             (((int)(x) + 7) & ~7)
+#define ALIGN_4BYTES(x)             (((int)(x) + 3) & ~3)
 #define POOLSIZE_TO_EFFTSIZE(x)     ((x) - sizeof(uint32_t))
 #define EFFTSIZE_TO_POOLSIZE(x)     ((x) + sizeof(uint32_t))
 
@@ -253,6 +253,8 @@ static int shm_recycle(shm_alloc_t *allocator, free_shm_pool_t *cur)
 //            list_debug("cur->size right grow to %d\n", cur->size);
         }
     }
+
+    return 0;
 }
 
 static void shm_harvest(shm_alloc_t *allocator)
@@ -446,7 +448,7 @@ char * shm_strdup(shm_alloc_handle handle, const char *s)
         mem = shm_malloc(info, len + 1);
 
     if (mem)
-        snprintf(mem, len + 1, s);
+        snprintf(mem, len + 1, "%s", s);
 
     return mem;
 }

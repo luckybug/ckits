@@ -297,7 +297,7 @@ char * pool_strdup(pool_alloc_t *allocator, const char *s)
             mem = pool_malloc(allocator, len + 1);
 
         if (mem)
-            snprintf(mem, len + 1, s);
+            snprintf(mem, len + 1, "%s", s);
     }
 
     return mem;

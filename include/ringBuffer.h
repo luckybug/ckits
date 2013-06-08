@@ -25,11 +25,11 @@ struct _ringBuffer
     int rd_pointer;
     long magic;
     int size;
-	int InCatchCycle;
-	mutexOp lock;
-	mutexOp unlock;
-	void *pMutex;
-	uint8_t buffer[0];
+    int InCatchCycle;
+    mutexOp lock;
+    mutexOp unlock;
+    void *pMutex;
+    uint8_t buffer[0];
 };
 
 

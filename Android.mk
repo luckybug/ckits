@@ -3,7 +3,14 @@ LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_SRC_FILES:=       \
-    myAlloc.c shmAlloc.c timeList.c ioStream.c hashTable.c epCore.c sh_print.c
+    myAlloc.c \
+    shmAlloc.c \
+    timeList.c \
+    ioStream.c \
+    hashTable.c \
+    epCore.c \
+    sh_print.c \
+    cJSON.c
 
 LOCAL_C_INCLUDES:= \
     $(LOCAL_PATH)/include 

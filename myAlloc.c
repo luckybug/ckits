@@ -50,7 +50,7 @@ int init_slot_allocator(slot_alloc_t *allocator)
     size = allocator->slotSize;
 
     // align
-	size = (size + 7) & ~7;
+    size = (size + 7) & ~7;
     if (size < sizeof(free_slot_t))
         size = sizeof(free_slot_t);
 
@@ -95,12 +95,14 @@ int init_pool_allocator(pool_alloc_t *allocator)
 
     do
     {
-        // FIXME: while applying to misaliagned memory page, chunkSize is not correct
         memStart = (uint8_t *)ALIGN_8BYTES(allocator->chunkMem);
         chunkEnd = (uint8_t *)allocator->chunkMem + allocator->chunkSize;
 
         if (memStart >= chunkEnd)
             break;
+
+        // while applying to misaliagned memory page, chunkSize should be decreased
+        allocator->chunkSize -= (memStart -  (uint8_t *)allocator->chunkMem);
 
         INIT_LIST_HEAD(&allocator->freeSlots);
         node = (free_pool_t *)memStart;
@@ -158,8 +160,11 @@ void * pool_malloc(pool_alloc_t *allocator, size_t size)
         return NULL;
 
     // align
-    if (size <= 0)
+    if (size <= 0) {
         return NULL;
+    } else if (size < sizeof(list_t)) { // free_pool_t::list
+        size = sizeof(list_t);
+    }
 
     // Then, adjust the delay queue for any entries whose time is up:
     list_for_each_entry(node, &(allocator->freeSlots), list)
@@ -336,24 +341,25 @@ void pool_alloc_dump(pool_alloc_t *allocator)
     if (NULL == allocator ||
         NULL == allocator->chunkMem || allocator->chunkSize <= 0)
     {
-        list_debug("invalid allocator\n");
+        printf("invalid allocator\n");
         return;
     }
 
-    list_debug("dump %p\n", allocator);
+    printf("allocator [%p]\n", allocator);
 
     i = 0;
     totalSize = 0;
     list_for_each_entry(cur, &(allocator->freeSlots), list)
     {
-        list_debug("%p --> unit %d(%d bytes)\n", cur, ++i, cur->size);
+        printf("  %p --> unit %d(%d bytes)\n", cur, ++i, cur->size);
         totalSize += EFFTSIZE_TO_POOLSIZE(cur->size);
     }
 
-    if (totalSize != allocator->chunkSize)
-        list_debug("allocator size %d/%d\n", totalSize, allocator->chunkSize);
-
-    list_debug("done\n");
+    if (totalSize != allocator->chunkSize) {
+        printf("allocator size %d/%d\n", totalSize, allocator->chunkSize);
+    } else {
+        printf("allocator has all memory in control\n");
+    }
 
     return;
 }

@@ -1,5 +1,5 @@
-#ifndef NW_IOSTREAM_H__
-#define NW_IOSTREAM_H__
+#ifndef BUFFER_IOSTREAM_H__
+#define BUFFER_IOSTREAM_H__
 
 #include <stdio.h>
 #include <stdlib.h>
